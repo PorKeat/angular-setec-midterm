@@ -12,7 +12,6 @@ interface Product {
 interface CartItem extends Product {
   qty: number;
 }
-
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -24,11 +23,13 @@ export class App {
   products: Product[] = [];
   cart: CartItem[] = [];
   isOpen = false;
+  showCheckoutModal = false;
 
   constructor(private productService: ProductService) {}
 
   async ngOnInit() {
     this.products = await this.productService.fetchProducts();
+    this.loadCartFromLocalStorage();
   }
 
   get totalUSD(): number {
@@ -36,7 +37,7 @@ export class App {
   }
 
   get totalKHR(): number {
-    return Math.round(this.totalUSD * 4100); // Conversion rate example
+    return Math.round(this.totalUSD * 4100);
   }
 
   get totalItems(): number {
@@ -50,7 +51,7 @@ export class App {
     } else {
       this.cart.push({ ...product, qty: 1 });
     }
-    // Removed auto-open: this.isOpen = true;
+    this.saveCartToLocalStorage();
   }
 
   changeQty(productId: number, delta: number) {
@@ -59,12 +60,15 @@ export class App {
       item.qty += delta;
       if (item.qty <= 0) {
         this.remove(productId);
+      } else {
+        this.saveCartToLocalStorage();
       }
     }
   }
 
   remove(productId: number) {
     this.cart = this.cart.filter((item) => item.id !== productId);
+    this.saveCartToLocalStorage();
     if (this.cart.length === 0) {
       this.isOpen = false;
     }
@@ -73,7 +77,6 @@ export class App {
   toggleCart() {
     this.isOpen = !this.isOpen;
   }
-  showCheckoutModal = false;
 
   openCheckoutModal() {
     this.showCheckoutModal = true;
@@ -85,12 +88,22 @@ export class App {
 
   confirmCheckout() {
     alert(
-      `Order placed successfully for $${this.totalUSD.toFixed(
-        2
-      )} / ៛${this.totalKHR.toLocaleString()}`
+      `Order placed successfully for $${this.totalUSD.toFixed(2)} / ៛${this.totalKHR.toLocaleString()}`
     );
     this.cart = [];
     this.isOpen = false;
     this.showCheckoutModal = false;
+    this.saveCartToLocalStorage();
+  }
+
+  private saveCartToLocalStorage() {
+    localStorage.setItem('cart', JSON.stringify(this.cart));
+  }
+
+  private loadCartFromLocalStorage() {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      this.cart = JSON.parse(storedCart);
+    }
   }
 }
