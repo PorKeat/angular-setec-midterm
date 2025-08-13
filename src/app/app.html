@@ -41,12 +41,8 @@
     >
       <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">
-            Product
-          </h2>
-          <p class="text-gray-600">
-            Buy what you want😁
-          </p>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Product</h2>
+          <p class="text-gray-600">Buy what you want😁</p>
         </div>
 
         <!-- Product Grid -->
@@ -69,41 +65,44 @@
             </div>
 
             <!-- Info Section -->
-            <div class="flex flex-col justify-between flex-1 p-4">
+            <div class="flex flex-col flex-1 p-4">
               <!-- Title (max 2 lines) -->
-              <p
-                class="text-sm font-medium text-gray-900 min-h-[3rem] mb-3"
-              >
-                {{ product.title }}
+              <p class="text-md font-bold text-gray-900 min-h-[3rem] mb-3">
+                {{ product.title | cutText:30 }}
               </p>
+              <div class="flex flex-col justify-between flex-1">
+                <p class="text-sm text-gray-900 mb-3">
+                  {{ product.description | cutText:60 }}
+                </p>
 
-              <!-- Price + Button Row -->
-              <div class="flex items-center justify-between">
-                <span
-                  class="text-base font-bold text-green-600 whitespace-nowrap"
-                >
-                  ${{ product.price.toFixed(2) }}
-                </span>
-
-                <button
-                  class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-                  (click)="addToCart(product)"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <!-- Price + Button Row -->
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-base font-bold text-green-600 whitespace-nowrap"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Add
-                </button>
+                    ${{ product.price.toFixed(2) }}
+                  </span>
+
+                  <button
+                    class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
+                    (click)="addToCart(product)"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -257,14 +256,14 @@
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-gray-600">Total (USD):</span>
-              <span class="font-semibold text-gray-900"
-                >${{ totalUSD.toFixed(2) }}</span
-              >
+              <span class="font-semibold text-gray-900">{{
+                totalUSD.toFixed(2) | currency
+              }}</span>
             </div>
             <div class="flex justify-between text-sm">
               <span class="text-gray-600">Total (KHR):</span>
               <span class="font-semibold text-gray-900"
-                >៛{{ totalKHR.toLocaleString() }}</span
+                >៛{{ totalKHR | roundHundreds : "getFromCustomer" }}</span
               >
             </div>
           </div>
@@ -299,8 +298,10 @@
       </p>
       <p class="text-sm text-gray-500 mb-6">
         Total:
-        <span class="font-semibold">${{ totalUSD.toFixed(2) }}</span> /
-        <span class="font-semibold">៛{{ totalKHR.toLocaleString() }}</span>
+        <span class="font-semibold">{{ totalUSD.toFixed(2) | currency }}</span>
+        <span class="font-semibold"
+          >៛{{ totalKHR | roundHundreds : "getFromCustomer" }}</span
+        >
       </p>
       <div class="flex justify-end gap-3">
         <button

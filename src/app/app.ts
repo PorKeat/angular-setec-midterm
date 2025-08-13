@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ProductService } from './services/product.service';
+import { CurrencyPipe } from '@angular/common';
+import { RoundHundredsPipe } from './custom_pipe/round-hundreds-pipe';
+import { CutTextPipe } from './custom_pipe/cut-text-pipe';
 
 interface Product {
   id: number;
   title: string;
+  description: string;
   price: number;
   image: string;
 }
@@ -14,7 +18,7 @@ interface CartItem extends Product {
 }
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CurrencyPipe, RoundHundredsPipe, CutTextPipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -88,7 +92,9 @@ export class App {
 
   confirmCheckout() {
     alert(
-      `Order placed successfully for $${this.totalUSD.toFixed(2)} / ៛${this.totalKHR.toLocaleString()}`
+      `Order placed successfully for $${this.totalUSD.toFixed(
+        2
+      )} / ៛${this.totalKHR.toLocaleString()}`
     );
     this.cart = [];
     this.isOpen = false;
